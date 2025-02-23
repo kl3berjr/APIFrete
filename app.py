@@ -63,6 +63,7 @@ def criar():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+
 # Rota para listar todos os veículos
 @appfrete.route('/lista', methods=['GET'])
 def listar():
@@ -80,7 +81,6 @@ def listar():
             for veiculo in veiculos
         ]
         return jsonify(veiculos_json), 200
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

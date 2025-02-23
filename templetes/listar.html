@@ -24,23 +24,38 @@
                     <table class="table table-striped table-hover table-bordered">
                         <tr>
                             <th>ID</th>
-                            <th>Nome</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Ano</th>
                             <th>Data de Criação</th>
                             <th>Última Atualização</th>
                             <th>Ações</th>
                         </tr>
-                        {% for item in items %}
-                        <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.created_at }}</td>
-                            <td>{{ item.updated_at }}</td>
-                            <td>
-                                <a href="{{ url_for('edit') }}" class="btn btn-warning btn-sm" onclick="return confirm('Tem certeza que deseja editar?')">Editar</a>
-                                <a href="{{ url_for('deletar') }}" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
+                    </thead>
+                    <tbody>
+                        {% if veiculos %}
+                            {% for veiculo in veiculos %}
+                            <tr>
+                                <td>{{ veiculo.id }}</td>
+                                <td>{{ veiculo.marca }}</td>
+                                <td>{{ veiculo.modelo }}</td>
+                                <td>{{ veiculo.ano }}</td>
+                                <td>{{ veiculo.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>{{ veiculo.updated_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit', id=veiculo.id) }}" class="btn btn-warning btn-sm"
+                                       onclick="return confirm('Tem certeza que deseja editar?')">Editar</a>
+                                    <a href="{{ url_for('deletar', id=veiculo.id) }}" class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Nenhum veículo encontrado.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
                     </table>
                 </div>
         </div>
