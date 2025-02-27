@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, flash, url_for, redirect
 from datetime import datetime
 from configBD import db, init_db
 
@@ -86,14 +86,61 @@ def listar():
 
 
 # Rota para editar um veículo
-@appfrete.route('/editar', methods=['GET'])
-def edit():
-    return render_template('editar.html')
+@appfrete.route('/editar/<int:id>', methods=['PUT'])
+def edit(id):
+    veiculo = Veiculo.query.get(id)  # Busca o veículo pelo ID
+    
+    if not veiculo:
+        return jsonify({"error": "Veículo não encontrado"}), 404
+
+    veiculo_edit = request.get_json()
+
+    try:
+        # Atualiza os valores do veículo
+        veiculo.marca = veiculo_edit.get('marca', veiculo.marca)
+        veiculo.modelo = veiculo_edit.get('modelo', veiculo.modelo)
+        veiculo.ano = veiculo_edit.get('ano', veiculo.ano)
+
+        db.session.commit()  # Salva no banco
+        return jsonify({
+            "id": veiculo.id,
+            "marca": veiculo.marca,
+            "modelo": veiculo.modelo,
+            "ano": veiculo.ano
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()  # Reverte a transação em caso de erro
+        return jsonify({"error": str(e)}), 500
+
 
 # Rota para excluir um veículo 
-@appfrete.route('/excluir', methods=['GET'])
-def deletar():
-    return render_template('excluir.html')
+@appfrete.route('/excluir/<int:id>', methods=['DELETE'])
+def deletar(id):
+    veiculo = Veiculo.query.get(id)  # Busca o veículo pelo ID
+
+    if not veiculo:
+        return jsonify({"error": "Veículo não encontrado"}), 404
+
+    veiculo_deletar = request.get_json()
+
+    try:
+        # Atualiza os valores do veículo
+        veiculo.marca = veiculo_deletar.get('marca', veiculo.marca)
+        veiculo.modelo = veiculo_deletar.get('modelo', veiculo.modelo)
+        veiculo.ano = veiculo_deletar.get('ano', veiculo.ano)
+
+        db.session.commit()  # Salva no banco
+        return jsonify({
+            "id": veiculo.id,
+            "marca": veiculo.marca,
+            "modelo": veiculo.modelo,
+            "ano": veiculo.ano
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()  # Reverte a transação em caso de erro
+        return jsonify({"error": str(e)}), 500
 
 
 # Executando a aplicação

@@ -1,0 +1,19 @@
+<form method="POST">
+    <div class="mb-3">
+        <label for="marca" class="form-label">Marca</label>
+        <input type="text" class="form-control" id="marca" name="marca" value="{{ veiculo.marca }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="modelo" class="form-label">Modelo</label>
+        <input type="text" class="form-control" id="modelo" name="modelo" value="{{ veiculo.modelo }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="ano" class="form-label">Ano</label>
+        <input type="number" class="form-control" id="ano" name="ano" value="{{ veiculo.ano }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('listar') }}" class="btn btn-secondary">Cancelar</a>
+</form>
