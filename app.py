@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, jsonify, flash, url_for, redirect
+from flask import Flask, request, render_template, jsonify
 from datetime import datetime
 from configBD import db, init_db
 
@@ -26,7 +26,7 @@ class Veiculo(db.Model):
 def exibir():
     return render_template('home.html')
 
-# Rota para cadastrar um novo veículo
+# Rota/API para cadastrar um novo veículo
 @appfrete.route('/cadastro', methods=['GET', 'POST'])
 def criar():
     if request.method == 'GET':
@@ -114,7 +114,7 @@ def edit(id):
         return jsonify({"error": str(e)}), 500
 
 
-# Rota para excluir um veículo 
+# Rota para excluir um veículo
 @appfrete.route('/excluir/<int:id>', methods=['DELETE'])
 def deletar(id):
     veiculo = Veiculo.query.get(id)  # Busca o veículo pelo ID
@@ -122,25 +122,15 @@ def deletar(id):
     if not veiculo:
         return jsonify({"error": "Veículo não encontrado"}), 404
 
-    veiculo_deletar = request.get_json()
-
     try:
-        # Atualiza os valores do veículo
-        veiculo.marca = veiculo_deletar.get('marca', veiculo.marca)
-        veiculo.modelo = veiculo_deletar.get('modelo', veiculo.modelo)
-        veiculo.ano = veiculo_deletar.get('ano', veiculo.ano)
-
-        db.session.commit()  # Salva no banco
-        return jsonify({
-            "id": veiculo.id,
-            "marca": veiculo.marca,
-            "modelo": veiculo.modelo,
-            "ano": veiculo.ano
-        }), 200
+        db.session.delete(veiculo)  # Remove o veículo do banco
+        db.session.commit()  # Salva a exclusão no banco
+        return jsonify({"message": "Veículo excluído com sucesso"}), 200
 
     except Exception as e:
         db.session.rollback()  # Reverte a transação em caso de erro
         return jsonify({"error": str(e)}), 500
+
 
 
 # Executando a aplicação
