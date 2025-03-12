@@ -1,0 +1,27 @@
+-- Criar a tabela de veículos
+CREATE TABLE veiculos (
+    id SERIAL PRIMARY KEY,
+    marca VARCHAR(100) NOT NULL,
+    modelo VARCHAR(100) NOT NULL,
+    ano INTEGER NOT NULL CHECK (ano BETWEEN 1900 AND EXTRACT(YEAR FROM CURRENT_DATE)),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Criar um trigger para atualizar automaticamente o campo updated_at
+CREATE OR REPLACE FUNCTION atualizar_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_veiculos
+BEFORE UPDATE ON veiculos
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_updated_at();
+
+-- Inserir dados de teste
+INSERT INTO veiculos (marca, modelo, ano) VALUES
+('Toyota', 'Corolla', 2020),
